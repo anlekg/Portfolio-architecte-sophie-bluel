@@ -232,9 +232,13 @@ li:hover {
 
 .filters-buttons {
 	text-align: center;
+	margin-bottom: 50px;
 }
 
 .filter-button {
+	display: none;
+}
+.filters-buttons label {
 	background-color: white;
 	border: 1px solid #1D6154;
 	color: #1D6154;
@@ -245,8 +249,7 @@ li:hover {
 	font-weight: 700;
 	font-size: 16px;
 }
-
-.filter-button:hover {
+.filters-buttons label:hover {
 	background-color: #1D6154;
 	color: white;
 }

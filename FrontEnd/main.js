@@ -1,4 +1,4 @@
-function fetchFromAPI(url, type) {
+function fetchFromAPI(url, type, id) {
     let dataArray = []
     fetch(url)
         .then(response => {
@@ -13,7 +13,7 @@ function fetchFromAPI(url, type) {
                 createMenu(dataArray)
             }
             if (type === 2) {
-                createGallery(dataArray, 0)
+                createGallery(dataArray, id)
             }
         })
         .catch(error => {
@@ -35,7 +35,14 @@ function createMenu(dataArray) {
         label.textContent = dataArray[i].name
         filtersButtons.appendChild(filterButton)
         filtersButtons.appendChild(label)
+        fetchFromAPI("http://localhost:5678/api/works", 2, 0)
     }
+    document.querySelectorAll('input[name="filter"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            const selectedRadio = document.querySelector('input[name="filter"]:checked')
+            fetchFromAPI("http://localhost:5678/api/works", 2, parseInt(selectedRadio.id))
+        })
+    })
 }
 
 function createGallery(dataArray, id) {
@@ -63,7 +70,7 @@ function editModale() {
         editLink.addEventListener("click", function () {
             event.preventDefault()
             modaleOpen(editPictures)
-        })
+        })    
     })
 }
 
@@ -164,8 +171,7 @@ function loginAPI(user, password) {
 
 if (window.location.pathname === "/index.html") {
     navLinks()
-    fetchFromAPI("http://localhost:5678/api/categories", 1)
-    fetchFromAPI("http://localhost:5678/api/works", 2)
+    fetchFromAPI("http://localhost:5678/api/categories", 1, null)
     editModale()
 } else {
     navLinks()
