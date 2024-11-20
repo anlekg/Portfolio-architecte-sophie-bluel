@@ -81,10 +81,13 @@ function createEditModale(dataArray) {
         const editPicturesSpan = document.createElement('span')
         const editPicturesImg = document.createElement('img')
         const editPicturesDelButton = document.createElement('button')
+        const editPicturesDelTrash = document.createElement('i')
+        editPicturesDelTrash.classList.add("fa-solid")
+        editPicturesDelTrash.classList.add("fa-trash-can")
         editPicturesSpan.classList.add("edit-span")
         editPicturesImg.src = dataArray[i].imageUrl
-        editPicturesDelButton.textContent = "X"
         editPicturesSpan.appendChild(editPicturesImg)
+        editPicturesDelButton.appendChild(editPicturesDelTrash)
         editPicturesSpan.appendChild(editPicturesDelButton)
         editPicturesDiv.appendChild(editPicturesSpan)
     }
@@ -113,31 +116,13 @@ function editModale() {
 function navLinks() {
     let token = sessionStorage.getItem("token")
     window.addEventListener('DOMContentLoaded', function () {
-        const instaLink = document.querySelector("#instagram-link")
-        instaLink.addEventListener("click", () => {
-            window.location.href = "https://instagram.com/"
-        })
-
-        const projectLink = document.querySelector("#project-link")
-        projectLink.addEventListener("click", () => {
-            window.location.href = "index.html#portfolio"
-        })
-
-        const contactLink = document.querySelector("#contact-link")
-        contactLink.addEventListener("click", () => {
-            window.location.href = "index.html#contact"
-        })
-
         const loginLink = document.querySelector("#login-link")
-        if (token != null) loginLink.innerHTML = "logout"
-        loginLink.addEventListener("click", () => {
-            if (token === null) window.location.href = "login.html"
-            else {
+        if (token != null) {
+            loginLink.innerHTML = "logout"
+            loginLink.addEventListener("click", () => {
                 sessionStorage.clear()
-                window.location.href = "login.html"
-            }
-        })
-
+            })
+        }
     })
 }
 
@@ -159,10 +144,13 @@ function loginForm() {
 
 function modaleOpen(message) {
     const closeModalButton = document.createElement("button")
+    const closeModalXmark = document.createElement("i")
     const overlay = document.getElementById("overlay")
     const modal = document.getElementById("modal")
     closeModalButton.classList.add("close-modal")
-    closeModalButton.textContent = "X"
+    closeModalXmark.classList.add("fa-solid")
+    closeModalXmark.classList.add("fa-xmark")
+    closeModalButton.appendChild(closeModalXmark)
     overlay.style.display = "block"
     modal.innerHTML = ""
     modal.appendChild(closeModalButton)

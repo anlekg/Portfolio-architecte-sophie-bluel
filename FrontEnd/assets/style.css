@@ -187,7 +187,7 @@ nav li {
 	font-size: 1.2em;
 }
 
-li:hover {
+li a:hover {
 	color: #B1663C;
 }
 
@@ -384,9 +384,8 @@ footer nav ul {
 	border: none;
 	background-color: white;
 	position: absolute;
-	top: 10px;
-	right: 10px;
-	font-weight: 700;
+	top: 20px;
+	right: 20px;
 	font-size: large;
 }
 
@@ -414,7 +413,11 @@ footer nav ul {
 
 .edit-span button {
 	position: absolute;
-	right: 5px;
+	top: 6px;
+	right: 10px;
+	background-color: black;
+	color: white;
+	border-radius: 4px;
 }
 
 .portfolio-title p {
