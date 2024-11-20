@@ -102,6 +102,7 @@ function createEditModale(dataArray) {
             if (userResponse) {
                 console.log("L'utilisateur a confirmé la suppression.")
                 worksDeleteAPI(button.id)
+                location.reload()
             } else console.log("L'utilisateur a annulé la suppression.")
         })
     })
