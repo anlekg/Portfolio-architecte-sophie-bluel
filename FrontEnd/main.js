@@ -1,67 +1,69 @@
-async function main() {
-    const projectsAPI = await fetch('http://localhost:5678/api/works')
-    const projectsList = await projectsAPI.json()
+function fetchFromAPI(url, type) {
+    let dataArray = []
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des données')
+            }
+            return response.json()
+        })
+        .then(data => {
+            dataArray = data
+            if (type === 1) {
+                createMenu(dataArray)
+            }
+            if (type === 2) {
+                createGallery(dataArray, 0)
+            }
+        })
+        .catch(error => {
+            console.error('Erreur :', error)
+        })
+}
+
+function createMenu(dataArray) {
+    const filtersButtons = document.querySelector('.filters-buttons')
+    for (let i = 0; i < dataArray.length; i++) {
+        const filterButton = document.createElement('input')
+        filterButton.classList.add('filter-button')
+        filterButton.id = dataArray[i].id
+        filterButton.type = 'radio'
+        filterButton.name = 'filter'
+        filterButton.value = dataArray[i].name
+        const label = document.createElement('label')
+        label.htmlFor = dataArray[i].id
+        label.textContent = dataArray[i].name
+        filtersButtons.appendChild(filterButton)
+        filtersButtons.appendChild(label)
+    }
+}
+
+function createGallery(dataArray, id) {
     const gallery = document.querySelector(".gallery")
-
-    for (let i = 0; i < projectsList.length; i++) {
-        gallery.innerHTML += '<figure><img src="' + projectsList[i].imageUrl + '" alt="' + projectsList[i].title + '"><figcaption>' + projectsList[i].title + '</figcaption></figure>'
+    gallery.innerHTML = ""
+    for (let i = 0; i < dataArray.length; i++) {
+        if (id === 0 || dataArray[i].categoryId === id) {
+            const figureElem = document.createElement('figure')
+            const imgElem = document.createElement('img')
+            const figcaptionElem = document.createElement('figcaption')
+            imgElem.src = dataArray[i].imageUrl
+            imgElem.alt = dataArray[i].title
+            figcaptionElem.textContent = dataArray[i].title
+            figureElem.appendChild(imgElem)
+            figureElem.appendChild(figcaptionElem)
+            gallery.appendChild(figureElem)
+        }
     }
+}
 
-    const categoriesAPI = await fetch('http://localhost:5678/api/categories')
-    const categoriesList = await categoriesAPI.json()
-    const filterButtons = document.querySelector('.filters-buttons')
-    filterButtons.innerHTML += '<button class="filter-button" id="filter-0">Tous</button>'
-
-    for (let i = 0; i < categoriesList.length; i++) {
-        filterButtons.innerHTML += '<button class="filter-button" id="filter-' + categoriesList[i].id + '">' + categoriesList[i].name + '</button>'
-    }
-
-    const buttonAll = document.querySelector("#filter-0")
-    buttonAll.addEventListener("click", function () {
-        gallery.innerHTML = ""
-        for (let i = 0; i < projectsList.length; i++) {
-            gallery.innerHTML += '<figure><img src="' + projectsList[i].imageUrl + '" alt="' + projectsList[i].title + '"><figcaption>' + projectsList[i].title + '</figcaption></figure>'
-        }
-    })
-
-    const buttonObjects = document.querySelector("#filter-1")
-    buttonObjects.addEventListener("click", function () {
-        gallery.innerHTML = ""
-        for (let i = 0; i < projectsList.length; i++) {
-            if (projectsList[i].categoryId == 1) {
-                gallery.innerHTML += '<figure><img src="' + projectsList[i].imageUrl + '" alt="' + projectsList[i].title + '"><figcaption>' + projectsList[i].title + '</figcaption></figure>'
-            }
-        }
-    })
-
-    const buttonRooms = document.querySelector("#filter-2")
-    buttonRooms.addEventListener("click", function () {
-        gallery.innerHTML = ""
-        for (let i = 0; i < projectsList.length; i++) {
-            if (projectsList[i].categoryId == 2) {
-                gallery.innerHTML += '<figure><img src="' + projectsList[i].imageUrl + '" alt="' + projectsList[i].title + '"><figcaption>' + projectsList[i].title + '</figcaption></figure>'
-            }
-        }
-    })
-
-    const buttonHotels = document.querySelector("#filter-3")
-    buttonHotels.addEventListener("click", function () {
-        gallery.innerHTML = ""
-        for (let i = 0; i < projectsList.length; i++) {
-            if (projectsList[i].categoryId == 3) {
-                gallery.innerHTML += '<figure><img src="' + projectsList[i].imageUrl + '" alt="' + projectsList[i].title + '"><figcaption>' + projectsList[i].title + '</figcaption></figure>'
-            }
-        }
-    })
-
-    const editLink = document.querySelector(".portfolio-title p a")
-    let editPictures = "Galerie photo<br>" 
-    editLink.addEventListener("click", function () {
-        event.preventDefault()
-        for (let i = 0; i < projectsList.length; i++) {
-            editPictures += '<img src="' + projectsList[i].imageUrl + '" alt="' + projectsList[i].title + '" style="height:120px">'
-        }
-        modaleOpen(editPictures)
+function editModale() {
+    window.addEventListener('DOMContentLoaded', function () {
+        const editLink = document.querySelector(".portfolio-title p a")
+        let editPictures = "Galerie photo<br>"
+        editLink.addEventListener("click", function () {
+            event.preventDefault()
+            modaleOpen(editPictures)
+        })
     })
 }
 
@@ -88,8 +90,10 @@ function navLinks() {
         const editionMode = document.querySelector(".edition-mode")
         const editionLink = document.querySelector(".portfolio-title p")
         if (token === null) {
-            editionMode.style.display = "none"
-            editionLink.style.display = "none"
+            if (window.location.pathname === "/index.html") {
+                editionMode.style.display = "none"
+                editionLink.style.display = "none"
+            }
             loginLink.addEventListener("click", () => {
                 window.location.href = "login.html"
             })
@@ -104,10 +108,6 @@ function navLinks() {
     })
 }
 
-// email: sophie.bluel@test.tld
-
-// password: S0phie 
-
 function loginForm() {
     window.addEventListener('DOMContentLoaded', function () {
         const formLogin = document.querySelector('#login-form form')
@@ -116,12 +116,6 @@ function loginForm() {
         formLogin.addEventListener('submit', async function (event) {
             event.preventDefault()
             const token = await loginAPI(emailInput.value, passwordInput.value)
-            if (token === 404) {
-                modaleOpen("Utilisateur inconnu")
-            }
-            if (token === 401) {
-                modaleOpen("Utilisateur ou mot de passe incorrect")
-            }
             if (typeof token === 'string') {
                 sessionStorage.setItem("token", token);
                 window.location.href = "index.html"
@@ -147,27 +141,32 @@ function modaleOpen(message) {
     })
 }
 
-async function loginAPI(user, password) {
-    const token = await fetch('http://localhost:5678/api/users/login', {
+function loginAPI(user, password) {
+    return fetch('http://localhost:5678/api/users/login', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: '{"email": "' + user + '","password": "' + password + '"}'
     })
-    const tokenJson = await token.json()
-    if (tokenJson.message === "user not found") {
-        return (404)
-    }
-    if (tokenJson.error != null) {
-        return (401)
-    }
-    else {
-        return (tokenJson.token)
-    }
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 404) modaleOpen("Utilisateur non trouvé")
+            if (response.status === 401) modaleOpen("Erreur d'authentification")
+        }
+        return response.json()
+    })
+    .then(tokenJson => {
+        if (tokenJson.token) return tokenJson.token
+    })
+    .catch(error => {
+        console.error("Erreur lors de la connexion :", error.message);
+    })
 }
 
 if (window.location.pathname === "/index.html") {
-    main()
     navLinks()
+    fetchFromAPI("http://localhost:5678/api/categories", 1)
+    fetchFromAPI("http://localhost:5678/api/works", 2)
+    editModale()
 } else {
     navLinks()
     loginForm()
