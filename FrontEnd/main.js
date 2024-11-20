@@ -9,15 +9,10 @@ function fetchFromAPI(url, type, id) {
         })
         .then(data => {
             dataArray = data
-            if (type === 1) {
-                createMenu(dataArray)
-            }
-            if (type === 2) {
-                createGallery(dataArray, id)
-            }
-            if (type === 3) {
-                createEditModale(dataArray)
-            }
+            if (type === 1) createMenu(dataArray)
+            if (type === 2) createGallery(dataArray, id)
+            if (type === 3) createEditModale(dataArray)
+            if (type === 4) createUploadForm(dataArray)
         })
         .catch(error => {
             console.error('Erreur :', error)
@@ -86,6 +81,8 @@ function createEditModale(dataArray) {
         editPicturesDelTrash.classList.add("fa-trash-can")
         editPicturesSpan.classList.add("edit-span")
         editPicturesImg.src = dataArray[i].imageUrl
+        editPicturesDelButton.id = dataArray[i].id
+        editPicturesDelButton.classList.add("delete-button")
         editPicturesSpan.appendChild(editPicturesImg)
         editPicturesDelButton.appendChild(editPicturesDelTrash)
         editPicturesSpan.appendChild(editPicturesDelButton)
@@ -94,6 +91,158 @@ function createEditModale(dataArray) {
     editPicturesDiv.appendChild(editPicturesHR)
     editPicturesDiv.appendChild(editPicturesInput)
     modaleOpen(editPicturesDiv)
+    editPicturesInput.addEventListener('click', function(event) {
+        fetchFromAPI("http://localhost:5678/api/categories", 4, null)
+    })
+    const deleteButtons = document.querySelectorAll(".delete-button")
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            const userResponse = confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")
+            if (userResponse) {
+                console.log("L'utilisateur a confirmé la suppression.")
+                worksDeleteAPI(button.id)
+            } else console.log("L'utilisateur a annulé la suppression.")
+        })
+    })
+}
+
+function createUploadForm(dataArray) {
+    const returnModalButton = document.createElement("button")
+    const returnModalArrow = document.createElement("i")
+    returnModalButton.classList.add("return-modal")
+    returnModalArrow.classList.add("fa-solid")
+    returnModalArrow.classList.add("fa-arrow-left")
+    returnModalButton.appendChild(returnModalArrow)
+    const uploadFormDiv = document.createElement('div')
+    const uploadFormP = document.createElement('p')
+    const uploadFormHR = document.createElement('hr')
+    const uploadForm = document.createElement('form')
+    const uploadFormInputPhoto = document.createElement('input')
+    const uploadFormInputTitle = document.createElement('input')
+    const uploadFormInputCat = document.createElement('select')
+    const uploadFormInputTitleLabel = document.createElement('label')
+    const uploadFormInputCatLabel = document.createElement('label')
+    const uploadFormSubmit = document.createElement('input')
+    uploadFormDiv.classList.add("edit-grid")
+    uploadForm.method = "post"
+    uploadFormInputPhoto.type = "file"
+    uploadFormInputPhoto.id = "add-photo"
+    uploadFormInputPhoto.accept = "image/png, image/jpeg"
+    uploadFormInputTitleLabel.htmlFor = "title"
+    uploadFormInputTitleLabel.textContent = "Titre"
+    uploadFormInputCatLabel.htmlFor = "category"
+    uploadFormInputCatLabel.textContent = "Catégorie"
+    uploadFormInputTitle.type = "text"
+    uploadFormInputTitle.id = "title"
+    uploadFormInputCat.name = "category"
+    uploadFormInputCat.id = "category"
+    uploadFormSubmit.type = "submit"
+    uploadFormSubmit.value = "Valider"
+    uploadForm.appendChild(uploadFormInputPhoto)
+    uploadForm.appendChild(uploadFormInputTitleLabel)
+    uploadForm.appendChild(uploadFormInputTitle)
+    for (let i = 0; i < dataArray.length; i++) {
+        const uploadFormInputCatOption = document.createElement('option')
+        uploadFormInputCatOption.value = dataArray[i].id
+        uploadFormInputCatOption.textContent = dataArray[i].name
+        uploadFormInputCat.appendChild(uploadFormInputCatOption)
+    }
+    uploadForm.appendChild(uploadFormInputCatLabel)
+    uploadForm.appendChild(uploadFormInputCat)
+    uploadForm.appendChild(uploadFormHR)
+    uploadForm.appendChild(uploadFormSubmit)
+    uploadFormDiv.appendChild(returnModalButton)
+    uploadFormDiv.appendChild(uploadFormP)
+    uploadFormDiv.appendChild(uploadForm)
+    modaleOpen(uploadFormDiv)
+    returnModalButton.addEventListener("click", function () {
+        event.preventDefault()
+        fetchFromAPI("http://localhost:5678/api/works", 3, null)
+    })
+    uploadFormSubmit.addEventListener("click", function () {
+        event.preventDefault()
+        const fileInput = uploadFormInputPhoto
+        const titleInput = uploadFormInputTitle.value
+        const categorySelect = uploadFormInputCat.value
+
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0]
+            worksPostAPI(file, titleInput, categorySelect)
+                .then(data => {
+                    console.log("Données envoyées avec succès :", data)
+                })
+                .catch(error => {
+                    console.error("Erreur :", error.message)
+                })
+        } else {
+            console.error("Veuillez sélectionner un fichier avant de soumettre.")
+        }
+    })
+}
+
+function worksPostAPI(image, title, category) {
+    let token = sessionStorage.getItem("token")
+    if (!image || !title || !category) {
+        return Promise.reject(new Error("Tous les champs (image, title, category) sont requis."))
+    }
+    const formData = new FormData()
+    formData.append('image', image)
+    formData.append('title', title)
+    formData.append('category', category)
+    return fetch('http://localhost:5678/api/works', {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                const errorMessage = errorData.message || `Erreur HTTP : ${response.status}`
+                return Promise.reject(new Error(errorMessage))
+            });
+        }
+        return response.json()
+    })
+    .then(data => {
+        console.log("Requête réussie :", data)
+        return data
+    })
+    .catch(error => {
+        console.error("Erreur lors de la requête POST :", error.message)
+        throw error
+    })
+}
+
+function worksDeleteAPI(workId) {
+    let token = sessionStorage.getItem("token")
+    if (!workId) {
+        return Promise.reject(new Error("L'ID de l'élément est requis."))
+    }
+    return fetch(`http://localhost:5678/api/works/${workId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                const errorMessage = errorData.message || `Erreur HTTP : ${response.status}`
+                return Promise.reject(new Error(errorMessage))
+            });
+        }
+        return response.text()
+    })
+    .then(data => {
+        console.log("Suppression réussie :", data)
+        return data
+    })
+    .catch(error => {
+        console.error("Erreur lors de la requête DELETE :", error.message)
+        throw error
+    })
 }
 
 function editModale() {
