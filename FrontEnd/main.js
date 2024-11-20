@@ -120,7 +120,7 @@ function loginForm() {
                 modaleOpen("Utilisateur inconnu")
             }
             if (token === 401) {
-                modaleOpen("Mot de passe incorrect")
+                modaleOpen("Utilisateur ou mot de passe incorrect")
             }
             if (typeof token === 'string') {
                 sessionStorage.setItem("token", token);
