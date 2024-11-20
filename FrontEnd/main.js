@@ -24,12 +24,12 @@ function createMenu(dataArray) {
     for (let i = 0; i < dataArray.length; i++) {
         const filterButton = document.createElement('input')
         filterButton.classList.add('filter-button')
-        filterButton.id = dataArray[i].id
+        filterButton.id = "cat-" + dataArray[i].id
         filterButton.type = 'radio'
         filterButton.name = 'filter'
         filterButton.value = dataArray[i].name
         const label = document.createElement('label')
-        label.htmlFor = dataArray[i].id
+        label.htmlFor = "cat-" + dataArray[i].id
         label.textContent = dataArray[i].name
         filtersButtons.appendChild(filterButton)
         filtersButtons.appendChild(label)
@@ -38,7 +38,8 @@ function createMenu(dataArray) {
     document.querySelectorAll('input[name="filter"]').forEach(radio => {
         radio.addEventListener('change', () => {
             const selectedRadio = document.querySelector('input[name="filter"]:checked')
-            fetchFromAPI("http://localhost:5678/api/works", 2, parseInt(selectedRadio.id))
+            const catId = parseInt(selectedRadio.id.split('-')[1], 10);
+            fetchFromAPI("http://localhost:5678/api/works", 2, catId)
         })
     })
 }
