@@ -492,3 +492,45 @@ a {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
+
+.file-upload-label {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	cursor: pointer;
+	justify-content: center;
+	padding: 20px 0;
+	background-color: #e8f1f6;
+	position: relative;
+	width: 300px;
+	margin-bottom: 30px;
+	border-radius: 5px;
+}
+  
+.fa-image {
+	font-size: 70px;
+	margin-bottom: 10px;
+	color: #cbd6dc;
+}
+  
+.upload-text {
+	font-size: 16px;
+	font-weight: bold;
+	background-color: #cbd6dc;
+	border-radius: 20px;
+	padding: 13px 28px;
+	margin-bottom: 10px;
+	color: #4d7b95;
+}
+
+.file-format {
+	font-size: 12px;
+}
+  
+.edit-grid #add-photo {
+	display: none;
+}
+
+.input-preview {
+	height: 200px;
+}

@@ -120,6 +120,11 @@ function createUploadForm(dataArray) {
     const uploadFormHR = document.createElement('hr')
     const uploadForm = document.createElement('form')
     const uploadFormInputPhoto = document.createElement('input')
+    const uploadFormInputPhotoLabel = document.createElement('label')
+    const uploadFormInputPhotoIcon = document.createElement('i')
+    const uploadFormInputPhotoAddText = document.createElement('span')
+    const uploadFormInputPhotoFormatText = document.createElement('span')
+    const uploadFormInputPhotoPreview = document.createElement('img')
     const uploadFormInputTitle = document.createElement('input')
     const uploadFormInputCat = document.createElement('select')
     const uploadFormInputTitleLabel = document.createElement('label')
@@ -130,6 +135,14 @@ function createUploadForm(dataArray) {
     uploadFormInputPhoto.type = "file"
     uploadFormInputPhoto.id = "add-photo"
     uploadFormInputPhoto.accept = "image/png, image/jpeg"
+    uploadFormInputPhotoLabel.htmlFor = "add-photo"
+    uploadFormInputPhotoLabel.classList.add('file-upload-label')
+    uploadFormInputPhotoIcon.classList.add('fa-regular')
+    uploadFormInputPhotoIcon.classList.add('fa-image')
+    uploadFormInputPhotoAddText.classList.add('upload-text')
+    uploadFormInputPhotoAddText.textContent = "+ Ajouter photo"
+    uploadFormInputPhotoFormatText.textContent = "jpg, png : 4mo max"
+    uploadFormInputPhotoFormatText.classList.add('file-format')
     uploadFormInputTitleLabel.htmlFor = "title"
     uploadFormInputTitleLabel.textContent = "Titre"
     uploadFormInputCatLabel.htmlFor = "category"
@@ -140,6 +153,10 @@ function createUploadForm(dataArray) {
     uploadFormInputCat.id = "category"
     uploadFormSubmit.type = "submit"
     uploadFormSubmit.value = "Valider"
+    uploadFormInputPhotoLabel.appendChild(uploadFormInputPhotoIcon)
+    uploadFormInputPhotoLabel.appendChild(uploadFormInputPhotoAddText)
+    uploadFormInputPhotoLabel.appendChild(uploadFormInputPhotoFormatText)
+    uploadForm.appendChild(uploadFormInputPhotoLabel)
     uploadForm.appendChild(uploadFormInputPhoto)
     uploadForm.appendChild(uploadFormInputTitleLabel)
     uploadForm.appendChild(uploadFormInputTitle)
@@ -160,6 +177,20 @@ function createUploadForm(dataArray) {
     returnModalButton.addEventListener("click", function () {
         event.preventDefault()
         fetchFromAPI("http://localhost:5678/api/works", 3, null)
+    })
+    uploadFormInputPhoto.addEventListener("change", (event) => {
+        const file = event.target.files[0]
+        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                uploadFormInputPhotoPreview.src = e.target.result
+                uploadFormInputPhotoPreview.classList.add("input-preview")
+                uploadFormInputPhotoLabel.innerHTML = ""
+                uploadFormInputPhotoLabel.style.padding = "0"
+                uploadFormInputPhotoLabel.appendChild(uploadFormInputPhotoPreview)
+            }
+            reader.readAsDataURL(file);
+        }
     })
     uploadFormSubmit.addEventListener("click", function () {
         event.preventDefault()
@@ -256,6 +287,7 @@ function editModale() {
             const editionLink = document.querySelector(".portfolio-title p")
             editionMode.style.display = "flex"
             editionLink.style.display = "block"
+            document.body.style.marginTop = "80px"
             editLink.addEventListener("click", function () {
                 event.preventDefault()
                 fetchFromAPI("http://localhost:5678/api/works", 3, null)
@@ -287,7 +319,7 @@ function loginForm() {
             const token = await loginAPI(emailInput.value, passwordInput.value)
             if (typeof token === 'string') {
                 sessionStorage.setItem("token", token);
-                window.location.href = "index.html"
+                window.location.href = "/FrontEnd/index.html"
             }
         })
     })
@@ -341,7 +373,7 @@ function loginAPI(user, password) {
         })
 }
 
-if (window.location.pathname === "/index.html") {
+if (window.location.pathname === "/FrontEnd/index.html") {
     navLinks()
     fetchFromAPI("http://localhost:5678/api/categories", 1, null)
     editModale()
