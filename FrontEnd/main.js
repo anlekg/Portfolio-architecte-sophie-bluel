@@ -3,7 +3,7 @@ function fetchFromAPI(url, type, id) {
     fetch(url)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Erreur lors de la récupération des données')
+                throw new Error("Erreur lors de la récupération des données")
             }
             return response.json()
         })
@@ -15,30 +15,30 @@ function fetchFromAPI(url, type, id) {
             if (type === 4) createUploadForm(dataArray)
         })
         .catch(error => {
-            console.error('Erreur :', error)
+            console.error("Erreur :", error)
         })
 }
 
 function createMenu(dataArray) {
-    const filtersButtons = document.querySelector('.filters-buttons')
+    const filtersButtons = document.querySelector(".filters-buttons")
     for (let i = 0; i < dataArray.length; i++) {
-        const filterButton = document.createElement('input')
-        filterButton.classList.add('filter-button')
+        const filterButton = document.createElement("input")
+        filterButton.classList.add("filter-button")
         filterButton.id = "cat-" + dataArray[i].id
-        filterButton.type = 'radio'
-        filterButton.name = 'filter'
+        filterButton.type = "radio"
+        filterButton.name = "filter"
         filterButton.value = dataArray[i].name
-        const label = document.createElement('label')
+        const label = document.createElement("label")
         label.htmlFor = "cat-" + dataArray[i].id
         label.textContent = dataArray[i].name
         filtersButtons.appendChild(filterButton)
         filtersButtons.appendChild(label)
         fetchFromAPI("http://localhost:5678/api/works", 2, 0)
     }
-    document.querySelectorAll('input[name="filter"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            const selectedRadio = document.querySelector('input[name="filter"]:checked')
-            const catId = parseInt(selectedRadio.id.split('-')[1], 10);
+    document.querySelectorAll("input[name='filter']").forEach(radio => {
+        radio.addEventListener("change", () => {
+            const selectedRadio = document.querySelector("input[name='filter']:checked")
+            const catId = parseInt(selectedRadio.id.split("-")[1], 10)
             fetchFromAPI("http://localhost:5678/api/works", 2, catId)
         })
     })
@@ -49,9 +49,9 @@ function createGallery(dataArray, id) {
     gallery.innerHTML = ""
     for (let i = 0; i < dataArray.length; i++) {
         if (id === 0 || dataArray[i].categoryId === id) {
-            const figureElem = document.createElement('figure')
-            const imgElem = document.createElement('img')
-            const figcaptionElem = document.createElement('figcaption')
+            const figureElem = document.createElement("figure")
+            const imgElem = document.createElement("img")
+            const figcaptionElem = document.createElement("figcaption")
             imgElem.src = dataArray[i].imageUrl
             imgElem.alt = dataArray[i].title
             figcaptionElem.textContent = dataArray[i].title
@@ -63,10 +63,10 @@ function createGallery(dataArray, id) {
 }
 
 function createEditModale(dataArray) {
-    const editPicturesDiv = document.createElement('div')
-    const editPicturesP = document.createElement('p')
-    const editPicturesHR = document.createElement('hr')
-    const editPicturesInput = document.createElement('input')
+    const editPicturesDiv = document.createElement("div")
+    const editPicturesP = document.createElement("p")
+    const editPicturesHR = document.createElement("hr")
+    const editPicturesInput = document.createElement("input")
     editPicturesP.textContent = "Galeries photo"
     editPicturesDiv.appendChild(editPicturesP)
     editPicturesDiv.classList.add("edit-grid")
@@ -74,10 +74,10 @@ function createEditModale(dataArray) {
     editPicturesInput.value = "Ajouter une photo"
     editPicturesInput.classList.add("edit-add-photo")
     for (let i = 0; i < dataArray.length; i++) {
-        const editPicturesSpan = document.createElement('span')
-        const editPicturesImg = document.createElement('img')
-        const editPicturesDelButton = document.createElement('button')
-        const editPicturesDelTrash = document.createElement('i')
+        const editPicturesSpan = document.createElement("span")
+        const editPicturesImg = document.createElement("img")
+        const editPicturesDelButton = document.createElement("button")
+        const editPicturesDelTrash = document.createElement("i")
         editPicturesDelTrash.classList.add("fa-solid")
         editPicturesDelTrash.classList.add("fa-trash-can")
         editPicturesSpan.classList.add("edit-span")
@@ -92,12 +92,12 @@ function createEditModale(dataArray) {
     editPicturesDiv.appendChild(editPicturesHR)
     editPicturesDiv.appendChild(editPicturesInput)
     modaleOpen(editPicturesDiv)
-    editPicturesInput.addEventListener('click', function(event) {
+    editPicturesInput.addEventListener("click", function(event) {
         fetchFromAPI("http://localhost:5678/api/categories", 4, null)
     })
     const deleteButtons = document.querySelectorAll(".delete-button")
     deleteButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
+        button.addEventListener("click", function(event) {
             const userResponse = confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")
             if (userResponse) {
                 console.log("L'utilisateur a confirmé la suppression.")
@@ -115,34 +115,34 @@ function createUploadForm(dataArray) {
     returnModalArrow.classList.add("fa-solid")
     returnModalArrow.classList.add("fa-arrow-left")
     returnModalButton.appendChild(returnModalArrow)
-    const uploadFormDiv = document.createElement('div')
-    const uploadFormP = document.createElement('p')
-    const uploadFormHR = document.createElement('hr')
-    const uploadForm = document.createElement('form')
-    const uploadFormInputPhoto = document.createElement('input')
-    const uploadFormInputPhotoLabel = document.createElement('label')
-    const uploadFormInputPhotoIcon = document.createElement('i')
-    const uploadFormInputPhotoAddText = document.createElement('span')
-    const uploadFormInputPhotoFormatText = document.createElement('span')
-    const uploadFormInputPhotoPreview = document.createElement('img')
-    const uploadFormInputTitle = document.createElement('input')
-    const uploadFormInputCat = document.createElement('select')
-    const uploadFormInputTitleLabel = document.createElement('label')
-    const uploadFormInputCatLabel = document.createElement('label')
-    const uploadFormSubmit = document.createElement('input')
+    const uploadFormDiv = document.createElement("div")
+    const uploadFormP = document.createElement("p")
+    const uploadFormHR = document.createElement("hr")
+    const uploadForm = document.createElement("form")
+    const uploadFormInputPhoto = document.createElement("input")
+    const uploadFormInputPhotoLabel = document.createElement("label")
+    const uploadFormInputPhotoIcon = document.createElement("i")
+    const uploadFormInputPhotoAddText = document.createElement("span")
+    const uploadFormInputPhotoFormatText = document.createElement("span")
+    const uploadFormInputPhotoPreview = document.createElement("img")
+    const uploadFormInputTitle = document.createElement("input")
+    const uploadFormInputCat = document.createElement("select")
+    const uploadFormInputTitleLabel = document.createElement("label")
+    const uploadFormInputCatLabel = document.createElement("label")
+    const uploadFormSubmit = document.createElement("input")
     uploadFormDiv.classList.add("edit-grid")
     uploadForm.method = "post"
     uploadFormInputPhoto.type = "file"
     uploadFormInputPhoto.id = "add-photo"
     uploadFormInputPhoto.accept = "image/png, image/jpeg"
     uploadFormInputPhotoLabel.htmlFor = "add-photo"
-    uploadFormInputPhotoLabel.classList.add('file-upload-label')
-    uploadFormInputPhotoIcon.classList.add('fa-regular')
-    uploadFormInputPhotoIcon.classList.add('fa-image')
-    uploadFormInputPhotoAddText.classList.add('upload-text')
+    uploadFormInputPhotoLabel.classList.add("file-upload-label")
+    uploadFormInputPhotoIcon.classList.add("fa-regular")
+    uploadFormInputPhotoIcon.classList.add("fa-image")
+    uploadFormInputPhotoAddText.classList.add("upload-text")
     uploadFormInputPhotoAddText.textContent = "+ Ajouter photo"
     uploadFormInputPhotoFormatText.textContent = "jpg, png : 4mo max"
-    uploadFormInputPhotoFormatText.classList.add('file-format')
+    uploadFormInputPhotoFormatText.classList.add("file-format")
     uploadFormInputTitleLabel.htmlFor = "title"
     uploadFormInputTitleLabel.textContent = "Titre"
     uploadFormInputCatLabel.htmlFor = "category"
@@ -161,7 +161,7 @@ function createUploadForm(dataArray) {
     uploadForm.appendChild(uploadFormInputTitleLabel)
     uploadForm.appendChild(uploadFormInputTitle)
     for (let i = 0; i < dataArray.length; i++) {
-        const uploadFormInputCatOption = document.createElement('option')
+        const uploadFormInputCatOption = document.createElement("option")
         uploadFormInputCatOption.value = dataArray[i].id
         uploadFormInputCatOption.textContent = dataArray[i].name
         uploadFormInputCat.appendChild(uploadFormInputCatOption)
@@ -180,7 +180,7 @@ function createUploadForm(dataArray) {
     })
     uploadFormInputPhoto.addEventListener("change", (event) => {
         const file = event.target.files[0]
-        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+        if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
             const reader = new FileReader()
             reader.onload = (e) => {
                 uploadFormInputPhotoPreview.src = e.target.result
@@ -189,7 +189,7 @@ function createUploadForm(dataArray) {
                 uploadFormInputPhotoLabel.style.padding = "0"
                 uploadFormInputPhotoLabel.appendChild(uploadFormInputPhotoPreview)
             }
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file)
         }
     })
     uploadFormSubmit.addEventListener("click", function () {
@@ -219,10 +219,10 @@ function worksPostAPI(image, title, category) {
         return Promise.reject(new Error("Tous les champs (image, title, category) sont requis."))
     }
     const formData = new FormData()
-    formData.append('image', image)
-    formData.append('title', title)
-    formData.append('category', category)
-    return fetch('http://localhost:5678/api/works', {
+    formData.append("image", image)
+    formData.append("title", title)
+    formData.append("category", category)
+    return fetch("http://localhost:5678/api/works", {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -234,7 +234,7 @@ function worksPostAPI(image, title, category) {
             return response.json().then(errorData => {
                 const errorMessage = errorData.message || `Erreur HTTP : ${response.status}`
                 return Promise.reject(new Error(errorMessage))
-            });
+            })
         }
         return response.json()
     })
@@ -264,7 +264,7 @@ function worksDeleteAPI(workId) {
             return response.json().then(errorData => {
                 const errorMessage = errorData.message || `Erreur HTTP : ${response.status}`
                 return Promise.reject(new Error(errorMessage))
-            });
+            })
         }
         return response.text()
     })
@@ -281,7 +281,7 @@ function worksDeleteAPI(workId) {
 function editModale() {
     let token = sessionStorage.getItem("token")
     if (token != null) {
-        window.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener("DOMContentLoaded", function () {
             const editLink = document.querySelector(".portfolio-title p a")
             const editionMode = document.querySelector(".edition-mode")
             const editionLink = document.querySelector(".portfolio-title p")
@@ -298,7 +298,7 @@ function editModale() {
 
 function navLinks() {
     let token = sessionStorage.getItem("token")
-    window.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener("DOMContentLoaded", function () {
         const loginLink = document.querySelector("#login-link")
         if (token != null) {
             loginLink.innerHTML = "logout"
@@ -310,15 +310,15 @@ function navLinks() {
 }
 
 function loginForm() {
-    window.addEventListener('DOMContentLoaded', function () {
-        const formLogin = document.querySelector('#login-form form')
-        const emailInput = document.getElementById('username')
-        const passwordInput = document.getElementById('password')
-        formLogin.addEventListener('submit', async function (event) {
+    window.addEventListener("DOMContentLoaded", function () {
+        const formLogin = document.querySelector("#login-form form")
+        const emailInput = document.getElementById("username")
+        const passwordInput = document.getElementById("password")
+        formLogin.addEventListener("submit", async function (event) {
             event.preventDefault()
             const token = await loginAPI(emailInput.value, passwordInput.value)
-            if (typeof token === 'string') {
-                sessionStorage.setItem("token", token);
+            if (typeof token === "string") {
+                sessionStorage.setItem("token", token)
                 window.location.href = "/FrontEnd/index.html"
             }
         })
@@ -350,7 +350,7 @@ function modaleOpen(message) {
 }
 
 function loginAPI(user, password) {
-    return fetch('http://localhost:5678/api/users/login', {
+    return fetch("http://localhost:5678/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: '{"email": "' + user + '","password": "' + password + '"}'
@@ -358,7 +358,7 @@ function loginAPI(user, password) {
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401 || response.status === 404) {
-                    const message = document.createElement('p')
+                    const message = document.createElement("p")
                     message.textContent = "Erreur d'authentification"
                     modaleOpen(message)
                 }
@@ -369,7 +369,7 @@ function loginAPI(user, password) {
             if (tokenJson.token) return tokenJson.token
         })
         .catch(error => {
-            console.error("Erreur lors de la connexion :", error.message);
+            console.error("Erreur lors de la connexion :", error.message)
         })
 }
 
