@@ -2,18 +2,15 @@ main()
 
 function main() {
     let token = sessionStorage.getItem("token")
-    window.addEventListener("DOMContentLoaded", function () {
-        const loginLink = document.querySelector("#login-link")
-        if (token != null) {
-            loginLink.innerHTML = "logout"
-            loginLink.addEventListener("click", () => {
-                sessionStorage.clear()
-            })
-        }
-    })
+    const loginLink = document.querySelector("#login-link")
+    if (token != null) {
+        loginLink.textContent = "logout"
+        loginLink.addEventListener("click", () => {
+            sessionStorage.clear()
+        })
+    }
     if (window.location.pathname === "/FrontEnd/index.html") {
         fetchFromAPI("http://localhost:5678/api/categories", 1, null)
-        editModale()
     } else {
         loginForm()
     }
@@ -66,6 +63,7 @@ function createMenu(dataArray) {
         filtersButtons.appendChild(label)
         fetchFromAPI("http://localhost:5678/api/works", 2, 0)
     }
+    editModale()
     document.querySelectorAll("input[name='filter']").forEach(radio => {
         radio.addEventListener("change", () => {
             const selectedRadio = document.querySelector("input[name='filter']:checked")
@@ -127,12 +125,12 @@ function createEditModale(dataArray) {
         hideModale()
     })
     editPicturesDiv.style.display = "flex"
-    editPicturesInput.addEventListener("click", function (event) {
+    editPicturesInput.addEventListener("click", function () {
         fetchFromAPI("http://localhost:5678/api/categories", 4, null)
     })
     const deleteButtons = document.querySelectorAll(".delete-button")
     deleteButtons.forEach(button => {
-        button.addEventListener("click", async function (event) {
+        button.addEventListener("click", async function () {
             const userResponse = confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")
             if (userResponse) {
                 try {
@@ -174,8 +172,8 @@ function createUploadForm(dataArray) {
         uploadFormInputCatOption.textContent = dataArray[i].name
         uploadFormInputCat.appendChild(uploadFormInputCatOption)
     }
-    returnModalButton.addEventListener("click", function () {
-        event.preventDefault()
+    returnModalButton.addEventListener("click", function (e) {
+        e.preventDefault()
         uploadForm.style.display = "none"
         fetchFromAPI("http://localhost:5678/api/works", 3, null)
     })
@@ -188,14 +186,14 @@ function createUploadForm(dataArray) {
                 uploadFormInputPhotoPreview.src = e.target.result
                 uploadFormInputPhotoPreview.classList.add("input-preview")
                 uploadFormInputPhotoLabel.innerHTML = ""
-                uploadFormInputPhotoLabel.style.padding = "0"
+                uploadFormInputPhotoLabel.classList.add("file-upload-label-loaded")
                 uploadFormInputPhotoLabel.appendChild(uploadFormInputPhotoPreview)
             }
             reader.readAsDataURL(file)
         }
     })
-    uploadFormSubmit.addEventListener("click", async function () {
-        event.preventDefault()
+    uploadFormSubmit.addEventListener("click", async function (e) {
+        e.preventDefault()
         const fileInput = uploadFormInputPhoto
         const titleInput = uploadFormInputTitle.value
         const categorySelect = uploadFormInputCat.value
@@ -205,8 +203,7 @@ function createUploadForm(dataArray) {
             try {
                 await worksPostAPI(file, titleInput, categorySelect)
                 .then(data => {
-                    hideModale()
-                    fetchFromAPI("http://localhost:5678/api/works", 2, 0)
+                    location.reload()
                 })
                 .catch(error => {
                     alert("Erreur :", error.message)
@@ -285,34 +282,30 @@ function worksDeleteAPI(workId) {
 function editModale() {
     let token = sessionStorage.getItem("token")
     if (token != null) {
-        window.addEventListener("DOMContentLoaded", function () {
-            const editLink = document.querySelector(".portfolio-title p a")
-            const editionMode = document.querySelector(".edition-mode")
-            const editionLink = document.querySelector(".portfolio-title p")
-            editionMode.style.display = "flex"
-            editionLink.style.display = "block"
-            document.body.style.marginTop = "80px"
-            editLink.addEventListener("click", function () {
-                event.preventDefault()
-                fetchFromAPI("http://localhost:5678/api/works", 3, null)
-            })
+        const editLink = document.querySelector(".portfolio-title p a")
+        const editionMode = document.querySelector(".edition-mode")
+        const editionLink = document.querySelector(".portfolio-title p")
+        editionMode.style.display = "flex"
+        editionLink.style.display = "block"
+        document.body.style.marginTop = "80px"
+        editLink.addEventListener("click", function (e) {
+            e.preventDefault()
+            fetchFromAPI("http://localhost:5678/api/works", 3, null)
         })
     }
 }
 
 function loginForm() {
-    window.addEventListener("DOMContentLoaded", function () {
-        const formLogin = document.querySelector("#login-form form")
-        const emailInput = document.getElementById("username")
-        const passwordInput = document.getElementById("password")
-        formLogin.addEventListener("submit", async function (event) {
-            event.preventDefault()
-            const token = await loginAPI(emailInput.value, passwordInput.value)
-            if (typeof token === "string") {
-                sessionStorage.setItem("token", token)
-                window.location.href = "/FrontEnd/index.html"
-            }
-        })
+    const formLogin = document.querySelector("#login-form form")
+    const emailInput = document.getElementById("username")
+    const passwordInput = document.getElementById("password")
+    formLogin.addEventListener("submit", async function (e) {
+        e.preventDefault()
+        const token = await loginAPI(emailInput.value, passwordInput.value)
+        if (typeof token === "string") {
+            sessionStorage.setItem("token", token)
+            window.location.href = "/FrontEnd/index.html"
+        }
     })
 }
 

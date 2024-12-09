@@ -547,6 +547,10 @@ a {
 	border-radius: 5px;
 }
 
+.file-upload-label-loaded {
+	padding: 0 !important;
+}
+
 .fa-image {
 	font-size: 70px;
 	margin-bottom: 10px;
