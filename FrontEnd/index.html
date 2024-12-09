@@ -33,7 +33,31 @@
 	<main>
 		<div id="overlay"></div>
 		<div id="modal">
-			<button id="close-modal">X</button>
+			<button id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+			<div id="edit-grid">
+				<p>Galeries photo</p>
+				<span id="edit-pictures"></span>
+				<hr>
+				<input type="submit" value="Ajouter une photo" id="edit-add-photo">
+			</div>
+			<div id="upload-form">
+				<button id="return-modal"><i class="fa-solid fa-arrow-left"></i></button>
+				<form method="post">
+					<label for="add-photo" id="file-upload-label">
+						<i class="fa-regular fa-image"></i>
+						<span class="upload-text">+ Ajouter photo</span>
+						<span class="file-format">jpg, png : 4mo max</span>
+					</label>
+					<input type="file" id="add-photo" accept="image/png, image/jpeg">
+					<label for="title">Titre</label>
+					<input type="text" id="title" required>
+					<label for="category">Catégorie</label>
+					<select name="category" id="category">
+					</select>
+					<hr>
+					<input type="submit" id="add-submit" value="Valider">
+				</form>
+			</div>
 		</div>
 		<section id="introduction">
 			<figure>

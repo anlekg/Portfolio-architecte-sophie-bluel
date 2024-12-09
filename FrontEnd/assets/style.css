@@ -238,6 +238,7 @@ li a:hover {
 .filter-button {
 	display: none;
 }
+
 .filters-buttons label {
 	background-color: white;
 	border: 1px solid #1D6154;
@@ -249,6 +250,7 @@ li a:hover {
 	font-weight: 700;
 	font-size: 16px;
 }
+
 .filters-buttons label:hover {
 	background-color: #1D6154;
 	color: white;
@@ -376,11 +378,13 @@ footer nav ul {
 	z-index: 20;
 	word-wrap: break-word;
 	width: 750px;
+	height: 60%;
+	overflow: auto;
 	border-radius: 8px;
 	display: none;
 }
 
-.close-modal {
+#close-modal {
 	border: none;
 	background-color: white;
 	position: absolute;
@@ -389,7 +393,7 @@ footer nav ul {
 	font-size: large;
 }
 
-.return-modal {
+#return-modal {
 	border: none;
 	background-color: white;
 	position: absolute;
@@ -438,14 +442,43 @@ a {
 	color: black;
 }
 
-.edit-grid {
-	display: flex;
+#edit-grid {
+	display: none;
 	flex-wrap: wrap;
-	justify-content: flex-start;
+	justify-content: space-between;
 	margin: 0 130px;
 }
 
-.edit-grid p {
+#modal::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+}
+
+#modal::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 10px;
+}
+
+#modal::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 10px;
+}
+
+#modal::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+#modal::-webkit-scrollbar-button {
+	display: none;
+}
+
+#edit-pictures {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+#edit-grid p {
 	width: 100%;
 	font-family: 'Work Sans';
 	font-size: 30px;
@@ -453,19 +486,19 @@ a {
 	margin: 40px 0;
 }
 
-.edit-grid hr {
+#edit-grid hr {
 	width: 100%;
 	margin-bottom: 20px;
 }
 
-.edit-grid .edit-span {
+#edit-grid .edit-span {
 	width: 20%;
 	display: flex;
 	justify-content: center;
 	margin-bottom: 30px;
 }
 
-.edit-grid input {
+#modal input {
 	height: 50px;
 	width: 300px;
 	font-size: 1.2em;
@@ -473,17 +506,17 @@ a {
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-.edit-grid form input {
+#modal form input {
 	width: 100%;
 	margin-top: 10px;
 	margin-bottom: 20px;
 }
 
-.edit-grid form label {
+#modal form label {
 	width: 100%;
 }
 
-.edit-grid form select {
+#modal form select {
 	width: 100%;
 	height: 50px;
 	margin-top: 10px;
@@ -493,7 +526,14 @@ a {
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-.file-upload-label {
+#upload-form {
+	display: none;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: 0 130px;
+}
+
+#file-upload-label {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -506,13 +546,13 @@ a {
 	margin-bottom: 30px;
 	border-radius: 5px;
 }
-  
+
 .fa-image {
 	font-size: 70px;
 	margin-bottom: 10px;
 	color: #cbd6dc;
 }
-  
+
 .upload-text {
 	font-size: 16px;
 	font-weight: bold;
@@ -526,8 +566,8 @@ a {
 .file-format {
 	font-size: 12px;
 }
-  
-.edit-grid #add-photo {
+
+#modal #add-photo {
 	display: none;
 }
 
