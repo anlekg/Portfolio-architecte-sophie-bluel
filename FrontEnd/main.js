@@ -1,14 +1,20 @@
+// Fonction principale qui initialise l'application JS
 main()
 
 function main() {
+    // Récupère le token de session et l'element qui affiche login en haut à droite
     let token = sessionStorage.getItem("token")
     const loginLink = document.querySelector("#login-link")
+    
+    // Si un token existe, change le texte du lien en "logout" et ajoute un event listener pour déconnecter
     if (token != null) {
         loginLink.textContent = "logout"
         loginLink.addEventListener("click", () => {
             sessionStorage.clear()
         })
     }
+
+    // Lance la chaîne de fonction apropriée selon la page
     if (window.location.pathname === "/FrontEnd/index.html") {
         fetchFromAPI("http://localhost:5678/api/categories", 1, null)
     } else {
@@ -16,6 +22,7 @@ function main() {
     }
 }
 
+// Fonction principale qui sert de relais pour une grande partie des actions du site et qui utilise l'API fournise
 function fetchFromAPI(url, type, id) {
     let dataArray = []
     fetch(url)
@@ -27,6 +34,7 @@ function fetchFromAPI(url, type, id) {
         })
         .then(data => {
             dataArray = data
+            // Appelle la fonction appropriée selon le type de données reçues par l'API et l'action entreprie par l'utilisateur
             switch (type) {
                 case 1:
                     createMenu(dataArray)
@@ -47,8 +55,10 @@ function fetchFromAPI(url, type, id) {
         })
 }
 
+// Crée le menu de filtres des catégories
 function createMenu(dataArray) {
     const filtersButtons = document.querySelector(".filters-buttons")
+    // Crée un bouton radio pour chaque catégorie
     for (let i = 0; i < dataArray.length; i++) {
         const filterButton = document.createElement("input")
         filterButton.classList.add("filter-button")
@@ -64,6 +74,7 @@ function createMenu(dataArray) {
         fetchFromAPI("http://localhost:5678/api/works", 2, 0)
     }
     editModale()
+    // Ajoute les event listeners pour filtrer la galerie
     document.querySelectorAll("input[name='filter']").forEach(radio => {
         radio.addEventListener("change", () => {
             const selectedRadio = document.querySelector("input[name='filter']:checked")
@@ -73,9 +84,11 @@ function createMenu(dataArray) {
     })
 }
 
+// Crée la galerie de projets
 function createGallery(dataArray, id) {
     const gallery = document.querySelector(".gallery")
     gallery.innerHTML = ""
+    // Crée un élément figure pour chaque projet correspondant au filtre, et pour toute les catégories si id = 0
     for (let i = 0; i < dataArray.length; i++) {
         if (id === 0 || dataArray[i].categoryId === id) {
             const figureElem = document.createElement("figure")
@@ -91,6 +104,7 @@ function createGallery(dataArray, id) {
     }
 }
 
+// Affiche la modale d'édition
 function createEditModale(dataArray) {
     const closeModalButton = document.getElementById("close-modal")
     const overlay = document.getElementById("overlay")
@@ -101,7 +115,8 @@ function createEditModale(dataArray) {
     const editPicturesDiv = document.getElementById("edit-grid")
     const editPicturesContainer = document.getElementById("edit-pictures")
     const editPicturesInput = document.getElementById("edit-add-photo")
-    editPicturesContainer.innerHTML = ""
+    editPicturesContainer.innerHTML = "" // Remise à 0 du conteneur avant de fetch de nouveau les éléments en cas de repassage dans cette boucle de l'application
+    // Crée les éléments pour chaque projet dans la modale
     for (let i = 0; i < dataArray.length; i++) {
         const editPicturesSpan = document.createElement("span")
         const editPicturesImg = document.createElement("img")
@@ -118,16 +133,18 @@ function createEditModale(dataArray) {
         editPicturesSpan.appendChild(editPicturesDelButton)
         editPicturesContainer.appendChild(editPicturesSpan)
     }
+    // Ajoute les event listeners pour fermer la modale (Croix + Fond grisé)
     closeModalButton.addEventListener("click", () => {
         hideModale()
     })
     overlay.addEventListener("click", () => {
         hideModale()
     })
-    editPicturesDiv.style.display = "flex"
+    editPicturesDiv.style.display = "flex" // Une fois tout les éléments chargés, affiche la grille d'édition
     editPicturesInput.addEventListener("click", function () {
         fetchFromAPI("http://localhost:5678/api/categories", 4, null)
     })
+    // Ajoute les event listeners pour supprimer les projets
     const deleteButtons = document.querySelectorAll(".delete-button")
     deleteButtons.forEach(button => {
         button.addEventListener("click", async function () {
@@ -145,6 +162,7 @@ function createEditModale(dataArray) {
     })
 }
 
+// Cache la modale
 function hideModale() {
     const overlay = document.getElementById("overlay")
     const modal = document.getElementById("modal")
@@ -154,6 +172,7 @@ function hideModale() {
     uploadForm.style.display = "none"
 }
 
+// Masque la grille d'édition et affiche le formulaire d'upload
 function createUploadForm(dataArray) {
     const editPicturesDiv = document.getElementById("edit-grid")
     editPicturesDiv.style.display = "none"
@@ -166,17 +185,20 @@ function createUploadForm(dataArray) {
     const returnModalButton = document.getElementById("return-modal")
     const uploadFormSubmit = document.getElementById("add-submit")
     uploadFormInputCat.innerHTML = ""
+    // Crée les options de catégories
     for (let i = 0; i < dataArray.length; i++) {
         const uploadFormInputCatOption = document.createElement("option")
         uploadFormInputCatOption.value = dataArray[i].id
         uploadFormInputCatOption.textContent = dataArray[i].name
         uploadFormInputCat.appendChild(uploadFormInputCatOption)
     }
+    // Ajoute l'event listener pour retourner à la modale précédente
     returnModalButton.addEventListener("click", function (e) {
         e.preventDefault()
         uploadForm.style.display = "none"
         fetchFromAPI("http://localhost:5678/api/works", 3, null)
     })
+    // Gère la prévisualisation de l'image
     uploadFormInputPhoto.addEventListener("change", (event) => {
         const file = event.target.files[0]
         const uploadFormInputPhotoPreview = document.createElement("img")
@@ -192,6 +214,7 @@ function createUploadForm(dataArray) {
             reader.readAsDataURL(file)
         }
     })
+    // Gère la soumission du formulaire
     uploadFormSubmit.addEventListener("click", async function (e) {
         e.preventDefault()
         const fileInput = uploadFormInputPhoto
@@ -217,6 +240,7 @@ function createUploadForm(dataArray) {
     })
 }
 
+// Envoie un nouveau projet à l'API
 function worksPostAPI(image, title, category) {
     let token = sessionStorage.getItem("token")
     if (!image || !title || !category) {
@@ -252,6 +276,7 @@ function worksPostAPI(image, title, category) {
         })
 }
 
+// Supprime un projet via l'API
 function worksDeleteAPI(workId) {
     let token = sessionStorage.getItem("token")
     if (!workId) {
@@ -279,6 +304,7 @@ function worksDeleteAPI(workId) {
         })
 }
 
+// Configure l'affichage du mode édition lorsque l'utilisateur est connecté
 function editModale() {
     let token = sessionStorage.getItem("token")
     if (token != null) {
@@ -295,6 +321,7 @@ function editModale() {
     }
 }
 
+// Gère le formulaire de connexion
 function loginForm() {
     const formLogin = document.querySelector("#login-form form")
     const emailInput = document.getElementById("username")
@@ -309,6 +336,7 @@ function loginForm() {
     })
 }
 
+// Gère l'authentification via l'API
 function loginAPI(user, password) {
     return fetch("http://localhost:5678/api/users/login", {
         method: "POST",
