@@ -155,7 +155,7 @@ function createEditModale(dataArray) {
                     hideModale()
                     fetchFromAPI("http://localhost:5678/api/works", 2, 0)
                 } catch (error) {
-                    alert(`Erreur lors de la suppression : ${error.message}`);
+                    alert(`Erreur lors de la suppression : ${error.message}`)
                 }
             }
         })
