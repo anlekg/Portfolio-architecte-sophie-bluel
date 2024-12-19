@@ -226,7 +226,10 @@ function createUploadForm(dataArray) {
             try {
                 await worksPostAPI(file, titleInput, categorySelect)
                 .then(data => {
-                    location.reload()
+                    hideModale()
+                    uploadFormInputPhoto.value = "",
+                    uploadFormInputTitle.value = "",
+                    fetchFromAPI("http://localhost:5678/api/works", 2, 0)
                 })
                 .catch(error => {
                     alert("Erreur :", error.message)
